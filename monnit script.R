@@ -219,7 +219,7 @@ names(monnit_current_df) <- sub("\\.", " ", names(monnit_current_df))
 #one df
 df_list <- list(monnit_current_df, monnit_dewpoint_df, monnit_gpkg_df, monnit_heatindex_df, monnit_humidity_df, monnit_temperature_df, monnit_wetbulb_df)
 
-joined_monnit_df <- df_list %>% reduce(full_join)
+joined_monnit_df <- df_list %>% reduce(full_join) %>% arrange(MessageDate)
 
 joined_monnit_df
 }
