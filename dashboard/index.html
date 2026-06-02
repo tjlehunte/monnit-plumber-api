@@ -1,26 +1,45 @@
+<!-- ========================================
+     SALFORD SMART HOME LIVE DATA DASHBOARD
+     HTML Document Structure
+     ======================================== -->
+
 <!DOCTYPE html>
 <html>
   <head>
+    <!-- Page title displayed in browser tab -->
     <title>Salford Smart Home Live Data Dashboard</title>
+    
+    <!-- External library: Chart.js for rendering interactive charts and graphs -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Link to external stylesheet for styling (colors, layout, fonts, etc.) -->
     <link rel="stylesheet" href="style.css">
+    
+    <!-- Favicon: Small icon displayed in browser tab -->
     <link rel="icon" href="/flavicon.ico">
   </head>
 
   <body>
+    <!-- ========================================
+         HEADER: Logo Bar with Institutional Logos
+         ======================================== -->
     <div class="logo-bar">
+      <!-- Left side of logo bar: Smart Labs logos -->
       <div class="logo-bar-left">
+        <!-- Smart Meters & Smart Homes Lab link with light/dark theme images -->
         <a href="https://energyhouselabs.salford.ac.uk/labs/smart-meterssmart-homes-laboratory/" target="_blank">
           <img src="sml-logo-light.png" id="sml-logo-light" alt="Smart Meters Smart Homes Laboratory homepage">
           <img src="sml-logo-dark.png" id="sml-logo-dark" alt="Smart Meters Smart Homes Laboratory homepage">
         </a>
         
+        <!-- Energy House Labs link with light/dark theme images -->
         <a href="https://energyhouselabs.salford.ac.uk/" target="_blank">
           <img src="ehl-logo-light.png" id="ehl-logo-light" alt="Energy House Labs homepage">
           <img src="ehl-logo-dark.png" id="ehl-logo-dark" alt="Energy House Labs homepage">
         </a>
       </div>
       
+      <!-- Right side of logo bar: University of Salford logo -->
       <div class="logo-bar-right">
         <a href="https://www.salford.ac.uk/" target="_blank">
           <img src="UOS-logo-light.png" id="uos-logo-light" alt="University of Salford homepage">
@@ -29,66 +48,150 @@
       </div>
     </div>
     
+    <!-- Main page title -->
     <h1>Salford Smart Home Live Data Dashboard</h1>
-    <h2 class="section-header"><span class="header-tooltip" data-tooltip="These are Monnit ALTA Wireless coin cell sensors, they update every 10 minutes">Monnit Sensors</span></h2>
     
+    <!-- Section header for Monnit Sensors with tooltip explaining update frequency -->
+    <h2 class="section-header">
+      <span class="header-tooltip" data-tooltip="These are Monnit ALTA Wireless coin cell sensors, they update every 10 minutes">
+        Monnit Sensors
+      </span>
+    </h2>
+    
+    <!-- ========================================
+         MONNIT SENSORS SECTION: Tab Navigation & Charts
+         ======================================== -->
     <div class="chart-section">      
-      <!-- Master tabs -->
+      <!-- Master tabs: Choose between Environment or Current data -->
       <div id="masterTabs" class="tab-row">
-        <div class="tab master-tab active" data-master="environment" data-tooltip="Temperature, Humidity, Dew Point and more">Environment</div>
-        <div class="tab master-tab" data-master="current" data-tooltip="Main incoming current metrics and cumulative Amp hours">Current (A)</div>
+        <!-- Environment data tab (Temperature, Humidity, Dew Point, etc.) -->
+        <div class="tab master-tab active" data-master="environment" data-tooltip="Temperature, Humidity, Dew Point and more">
+          Environment
+        </div>
+        <!-- Current/Amperage data tab -->
+        <div class="tab master-tab" data-master="current" data-tooltip="Main incoming current metrics and cumulative Amp hours">
+          Current (A)
+        </div>
       </div>
       
-      <!-- Environment sub-tabs -->
+      <!-- Environment sub-tabs: Different environment metrics (displayed when Environment master tab is active) -->
       <div id="envTabs" class="tab-row sub-tab-row">
-        <div class="tab active" data-type="temperature" data-tooltip="Ambient Temperature (°C)">Temperature</div>
-        <div class="tab" data-type="humidity" data-tooltip="Relative humidity (%) - percentage of current amount of water vapour in the air compared to the maximum the air at this temperature could hold">Humidity</div>
-        <div class="tab" data-type="dewpoint" data-tooltip="Dewpoint (°C) - the temperature to which the air must be cooled to become saturated with water vapor, resulting in condensation">Dew Point</div>
-        <div class="tab" data-type="gpkg" data-tooltip="Grams of water vapor per kilogram of air (g/kg)">Grams per kg</div>
-        <div class="tab" data-type="heatindex" data-tooltip="'Feels like' temperature">Heat Index</div>
-        <div class="tab" data-type="wetbulb" data-tooltip="The theoretical temperature of the air if it was at 100% relative humidity">Wet Bulb</div>
+        <!-- Temperature chart tab -->
+        <div class="tab active" data-type="temperature" data-tooltip="Ambient Temperature (°C)">
+          Temperature
+        </div>
+        <!-- Humidity chart tab: Relative humidity percentage -->
+        <div class="tab" data-type="humidity" data-tooltip="Relative humidity (%) - percentage of current amount of water vapour in the air compared to the maximum the air at this temperature could hold">
+          Humidity
+        </div>
+        <!-- Dew Point chart tab: Temperature at which condensation occurs -->
+        <div class="tab" data-type="dewpoint" data-tooltip="Dewpoint (°C) - the temperature to which the air must be cooled to become saturated with water vapor, resulting in condensation">
+          Dew Point
+        </div>
+        <!-- Grams per kilogram of air: Measure of water vapor content -->
+        <div class="tab" data-type="gpkg" data-tooltip="Grams of water vapor per kilogram of air (g/kg)">
+          Grams per kg
+        </div>
+        <!-- Heat Index chart tab: "Feels like" temperature accounting for humidity -->
+        <div class="tab" data-type="heatindex" data-tooltip="'Feels like' temperature">
+          Heat Index
+        </div>
+        <!-- Wet Bulb chart tab: Temperature reading from a wet-bulb thermometer -->
+        <div class="tab" data-type="wetbulb" data-tooltip="The theoretical temperature of the air if it was at 100% relative humidity">
+          Wet Bulb
+        </div>
       </div>
       
-      <!-- Current sub-tabs -->
+      <!-- Current sub-tabs: Different current/amperage metrics (hidden by default, shown when Current master tab is active) -->
       <div id="currentTabs" class="tab-row sub-tab-row" style="display:none;">
-        <div class="tab active" data-type="current-summary" data-tooltip="Minimum, maximum and average current over the last 10 minutes">Current (Min / Max / Avg)</div>
-        <div class="tab" data-type="current-cumulative" data-tooltip="Cumulative Amp Hours">Current (Cumulative)</div>
+        <!-- Current summary tab: Min/Max/Avg values over last 10 minutes -->
+        <div class="tab active" data-type="current-summary" data-tooltip="Minimum, maximum and average current over the last 10 minutes">
+          Current (Min / Max / Avg)
+        </div>
+        <!-- Cumulative current tab: Total Amp hours -->
+        <div class="tab" data-type="current-cumulative" data-tooltip="Cumulative Amp Hours">
+          Current (Cumulative)
+        </div>
       </div>
       
+      <!-- Chart display container -->
       <div class="chart-container">
+        <!-- Spinner/loading indicator shown while data loads -->
         <div class="chart-spinner" id="spinner"></div>
+        
+        <!-- Legend control buttons for toggling chart datasets on/off -->
         <div class="legend-controls">
+          <!-- Hide all datasets button -->
           <button id="hideAllBtn">Hide All</button>
+          <!-- Show all datasets button -->
           <button id="showAllBtn">Show All</button>
+          <!-- Invert visibility of all datasets button -->
           <button id="invertBtn">Invert</button>
         </div>
+        
+        <!-- Canvas element where Chart.js renders the Monnit data chart -->
         <div class="canvas-wrapper">
           <canvas id="mainChart"></canvas>
+        </div>
       </div>
     </div>
 
-      <!-- GivEnergy section -->
-      <div class="givenergy-section">
-        <h2><span class="header-tooltip" data-tooltip="Energy flows from the Givenergy inverter and solar panel system, it updates every 30 minutes">GivEnergy - Energy Flows</span></h2>
+    <!-- ========================================
+         GivENERGY SECTION: Solar & Battery Energy Flows
+         ======================================== -->
+    <div class="givenergy-section">
+      <!-- Section header with tooltip explaining GivEnergy data and update frequency -->
+      <h2>
+        <span class="header-tooltip" data-tooltip="Energy flows from the Givenergy inverter and solar panel system, it updates every 30 minutes">
+          GivEnergy - Energy Flows
+        </span>
+      </h2>
 
-        <div id="givenergyTabs" class="tab-row">
-          <div class="tab active" data-flow="pv-home" data-tooltip="The energy generated by the PV's sent straight to the home">PV to Home</div>
-          <div class="tab" data-flow="pv-battery" data-tooltip="The energy generated by the PV's used to charge the battery">PV to Battery</div>
-          <div class="tab" data-flow="pv-grid" data-tooltip="The energy generated by the PV's that is exported back to the grid">PV to Grid</div>
-          <div class="tab" data-flow="grid-home" data-tooltip="The energy consumed by the house that was supplied by the grid">Grid to Home</div>
-          <div class="tab" data-flow="grid-battery" data-tooltip="The energy used to charge the battery from the grid">Grid to Battery</div>
-          <div class="tab" data-flow="battery-home" data-tooltip="The energy used to power the home from the battery">Battery to Home</div>
-          <div class="tab" data-flow="battery-grid" data-tooltip="The energy exported back to the grid by the battery">Battery to Grid</div>
+      <!-- Tabs for different energy flow directions -->
+      <div id="givenergyTabs" class="tab-row">
+        <!-- PV (Solar Panel) to Home: Direct solar energy to house -->
+        <div class="tab active" data-flow="pv-home" data-tooltip="The energy generated by the PV's sent straight to the home">
+          PV to Home
         </div>
-        
-        <div class="chart-container">
-          <div class="chart-spinner" id="givenergySpinner"></div>
-          <div class="canvas-wrapper">
-            <canvas id="givenergyChart"></canvas>
-          </div>
+        <!-- PV to Battery: Solar energy used to charge battery -->
+        <div class="tab" data-flow="pv-battery" data-tooltip="The energy generated by the PV's used to charge the battery">
+          PV to Battery
+        </div>
+        <!-- PV to Grid: Excess solar energy exported to electricity grid -->
+        <div class="tab" data-flow="pv-grid" data-tooltip="The energy generated by the PV's that is exported back to the grid">
+          PV to Grid
+        </div>
+        <!-- Grid to Home: Electricity from grid supplying house -->
+        <div class="tab" data-flow="grid-home" data-tooltip="The energy consumed by the house that was supplied by the grid">
+          Grid to Home
+        </div>
+        <!-- Grid to Battery: Electricity from grid charging battery -->
+        <div class="tab" data-flow="grid-battery" data-tooltip="The energy used to charge the battery from the grid">
+          Grid to Battery
+        </div>
+        <!-- Battery to Home: Stored battery energy powering house -->
+        <div class="tab" data-flow="battery-home" data-tooltip="The energy used to power the home from the battery">
+          Battery to Home
+        </div>
+        <!-- Battery to Grid: Battery energy exported back to grid -->
+        <div class="tab" data-flow="battery-grid" data-tooltip="The energy exported back to the grid by the battery">
+          Battery to Grid
         </div>
       </div>
       
-      <script src="script.js"></script>
+      <!-- Chart display container for GivEnergy data -->
+      <div class="chart-container">
+        <!-- Spinner/loading indicator for GivEnergy chart -->
+        <div class="chart-spinner" id="givenergySpinner"></div>
+        
+        <!-- Canvas element where Chart.js renders the GivEnergy data chart -->
+        <div class="canvas-wrapper">
+          <canvas id="givenergyChart"></canvas>
+        </div>
+      </div>
+    </div>
+    
+    <!-- External JavaScript file containing all chart and interactivity logic -->
+    <script src="script.js"></script>
   </body>
 </html>
