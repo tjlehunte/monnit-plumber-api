@@ -261,8 +261,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // ==================== TAB INITIALIZATION FUNCTION ====================
   // Initialize all tab switching functionality
   function initTabs() {
-
-    // ===== MASTER TABS (Environment vs Current) =====
+// ===== MASTER TABS (Environment vs Current vs Givenergy) =====
     // Handle clicks on the main master tabs
     document.querySelectorAll("#masterTabs .tab").forEach(tab => {
       tab.addEventListener("click", () => {
@@ -272,23 +271,69 @@ document.addEventListener("DOMContentLoaded", () => {
         tab.classList.add("active");
 
         const master = tab.dataset.master;
+        const sectionHeaderSpan = document.querySelector(".section-header span");
+        const legendControls = document.querySelector(".legend-controls");
 
-        // If "environment" tab clicked, show environment sub-tabs
+        // Restore default section header and button controls for Monnit metrics
+        if (sectionHeaderSpan) {
+          if (master === "givenergy") {
+            sectionHeaderSpan.textContent = "Givenergy";
+          } else {
+            sectionHeaderSpan.textContent = "Monnit Sensors";
+          }
+        }
+
+        // Show/Hide appropriate sub-tab elements and configure legend
         if (master === "environment") {
+          if(legendControls) legendControls.style.display = "flex";
           document.getElementById("envTabs").style.display = "flex";
           document.getElementById("currentTabs").style.display = "none";
-          // Trigger the currently active environment sub-tab to draw its chart
+          
+          // Show Givenergy subtabs if they are hidden behind mobile view, else do nothing
+          const desktopGeTabs = document.getElementById("givenergyTabs");
+          if (desktopGeTabs && window.innerWidth <= 768) desktopGeTabs.style.display = "none";
+
+          // Force update main chart options back to visible legend
+          mainChart.options.plugins.legend.display = true;
+
           const activeEnv = document.querySelector("#envTabs .tab.active");
           if (activeEnv) activeEnv.click();
         }
 
-        // If "current" tab clicked, show current sub-tabs
         if (master === "current") {
+          if(legendControls) legendControls.style.display = "flex";
           document.getElementById("envTabs").style.display = "none";
           document.getElementById("currentTabs").style.display = "flex";
-          // Trigger the currently active current sub-tab to draw its chart
+          
+          const desktopGeTabs = document.getElementById("givenergyTabs");
+          if (desktopGeTabs && window.innerWidth <= 768) desktopGeTabs.style.display = "none";
+
+          mainChart.options.plugins.legend.display = true;
+
           const activeCurrent = document.querySelector("#currentTabs .tab.active");
           if (activeCurrent) activeCurrent.click();
+        }
+
+        if (master === "givenergy") {
+          // Mobile only: Hide Monnit controls and open Givenergy flow selection
+          if(legendControls) legendControls.style.display = "none"; // Hide show/hide/invert buttons
+          document.getElementById("envTabs").style.display = "none";
+          document.getElementById("currentTabs").style.display = "none";
+          
+          // Bring up the Givenergy flow tabs inside the mobile view container
+          const geTabs = document.getElementById("givenergyTabs");
+          if (geTabs) {
+            geTabs.style.display = "flex";
+            geTabs.classList.add("sub-tab-row"); // Apply spacing
+          }
+
+          // Givenergy doesn't need a legend
+          mainChart.options.plugins.legend.display = false;
+
+          // Find active Givenergy flow or click the first one available
+          let activeGe = document.querySelector("#givenergyTabs .tab.active");
+          if (!activeGe) activeGe = document.querySelector("#givenergyTabs .tab");
+          if (activeGe) activeGe.click();
         }
       });
     });
@@ -328,6 +373,58 @@ document.addEventListener("DOMContentLoaded", () => {
         // Draw the appropriate current chart
         if (type === "current-summary")    drawChart(allData, current3Cols,   "Current (Min / Max / Avg)", "Current (A)",    true);
         if (type === "current-cumulative") drawChart(allData, currentcumCols, "Cumulative Current (Ah)",   "Amp-Hours (Ah)", true);
+      });
+    });
+
+    // ===== GIVENERGY SUB-TABS REDIRECTION FOR MOBILE =====
+    document.querySelectorAll("#givenergyTabs .tab").forEach(tab => {
+      tab.addEventListener("click", () => {
+        // Handle normal visual tab activation states
+        document.querySelectorAll("#givenergyTabs .tab").forEach(t => t.classList.remove("active"));
+        tab.classList.add("active");
+
+        const flow = tab.dataset.flow;
+        const flowTitle = tab.textContent.trim();
+
+        if (window.innerWidth <= 768) {
+          // MOBILE VIEW: Inject GiveEnergy dataset directly into mainChart instead of givenergyChart
+          const flowData = givenergyData.map(d => d[flow]);
+          const labels = givenergyData.map(d => d.start);
+          const textColor = window.matchMedia("(prefers-color-scheme: dark)").matches ? "#ddd" : "#000";
+
+          // Build single Givenergy array dataset matching your drawGivenergyChart configuration mapping rules
+          mainChart.data.labels = labels;
+          mainChart.data.datasets = [{
+            label: flowTitle,
+            data: flowData,
+            borderColor: "#3498db",
+            backgroundColor: "#3498db",
+            pointStyle: "rect",
+            borderWidth: 1,
+            pointRadius: 1,
+            pointHoverRadius: 8,
+            tension: 0.2,
+            fill: false
+          }];
+
+          // Rescale Y Axis Bounds conditionally
+          const numericVals = flowData.map(v => Number(v)).filter(v => Number.isFinite(v));
+          const roundedMax = Math.ceil(Math.max(...numericVals) / 5) * 5;
+          const roundedMin = Math.floor(Math.min(...numericVals) / 5) * 5;
+          mainChart.options.scales.y.min = roundedMin;
+          mainChart.options.scales.y.max = roundedMax === roundedMin ? roundedMin + 5 : roundedMax;
+
+          mainChart.options.plugins.title.text = flowTitle;
+          mainChart.options.plugins.title.color = textColor;
+          mainChart.options.scales.y.title.text = "Energy Flow"; // Give energy unified metric title
+
+          mainChart.update();
+        } else {
+          // DESKTOP VIEW: Fallback gracefully to original workflow triggers if needed
+          if (typeof drawGivenergyChart === "function") {
+            drawGivenergyChart(givenergyData, flow, flowTitle);
+          }
+        }
       });
     });
   }
@@ -438,25 +535,26 @@ document.addEventListener("DOMContentLoaded", () => {
           plugins: {
             // Legend configuration
             legend: {
-              position: "right",                        // Place legend on the right
+              // Move to bottom for small screens, right for desktop
+              position: window.innerWidth <= 768 ? "bottom" : "right", 
               labels: {
                 font: { size: 15 },
                 color: textColor,
-                usePointStyle: true,                    // Use small point style in legend
-                pointStyle: "rect",                     // Square legend markers
+                usePointStyle: true,
+                pointStyle: "rect",
                 pointStyleWidth: 16,
                 generateLabels: function(chart) {
+                  // Keep your existing custom generateLabels logic intact...
                   return chart.data.datasets.map((ds, i) => ({
                     text: ds.label,
                     fillStyle: ds.backgroundColor,
                     strokeStyle: ds.backgroundColor,
                     lineWidth: 0,
                     pointStyle: "rect",
-                    fontColor: textColor,
+                    fontColor: window.matchMedia("(prefers-color-scheme: dark)").matches ? "#ddd" : "#000",
                     hidden: !chart.isDatasetVisible(i),
                     datasetIndex: i
-                  }));
-                }
+                }));
               }
             },
             tooltip: { enabled: true },                 // Show data on hover
@@ -499,6 +597,7 @@ document.addEventListener("DOMContentLoaded", () => {
               grid: { color: gridColor },
               title: { display: true, text: "", align: "center", color: textColor, font: { size: 20 } }
             }
+          }
           }
         }
       });
