@@ -62,17 +62,18 @@
          MONNIT SENSORS SECTION: Tab Navigation & Charts
          ======================================== -->
     <div class="chart-section">      
-      <!-- Master tabs: Choose between Environment or Current data -->
-      <div id="masterTabs" class="tab-row">
-        <!-- Environment data tab (Temperature, Humidity, Dew Point, etc.) -->
-        <div class="tab master-tab active" data-master="environment" data-tooltip="Temperature, Humidity, Dew Point and more">
-          Environment
-        </div>
-        <!-- Current/Amperage data tab -->
-        <div class="tab master-tab" data-master="current" data-tooltip="Main incoming current metrics and cumulative Amp hours">
-          Current (A)
-        </div>
-      </div>
+         <!-- Master tabs: Choose between Environment or Current data -->
+         <div id="masterTabs" class="tab-row">
+           <div class="tab master-tab active" data-master="environment" data-tooltip="Temperature, Humidity, Dew Point and more">
+                Environment
+           </div>
+              <div class="tab master-tab" data-master="current" data-tooltip="Main incoming current metrics and cumulative Amp hours">
+                   Current (A)
+              </div>
+              <div class="tab master-tab mobile-only-tab" data-master="givenergy" data-tooltip="Solar, Battery, and Grid Energy Flow">
+                   Givenergy
+              </div>
+         </div>
       
       <!-- Environment sub-tabs: Different environment metrics (displayed when Environment master tab is active) -->
       <div id="envTabs" class="tab-row sub-tab-row">
