@@ -82,6 +82,12 @@ document.addEventListener("DOMContentLoaded", () => {
   // ==================== MAIN CHART DRAWING FUNCTION ====================
   // Draw the main sensor data chart with the provided data and columns
   function drawChart(data, cols, title, unit, isCurrentChart = false) {
+    // Guard clause: ensure mainChart exists and has required properties
+    if (!mainChart || !mainChart.options || !mainChart.options.scales || !mainChart.options.scales.y) {
+      console.warn("drawChart called before mainChart was fully initialized. Skipping draw.");
+      return;
+    }
+
     // Extract date labels from the data
     const labels = data.map(d => d.MessageDate);
 
@@ -183,6 +189,12 @@ document.addEventListener("DOMContentLoaded", () => {
   // ==================== GIVENERGY CHART DRAWING FUNCTION ====================
   // Draw the GiveEnergy (solar/battery) data chart
   function drawGivenergyChart(data, flowCol, title) {
+    // Guard clause: ensure givenergyChart exists and has required properties
+    if (!givenergyChart || !givenergyChart.options || !givenergyChart.options.scales || !givenergyChart.options.scales.y) {
+      console.warn("drawGivenergyChart called before givenergyChart was fully initialized. Skipping draw.");
+      return;
+    }
+
     // Log for debugging dark mode detection
     console.log("drawGivenergyChart called, textColor will be:", window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
     
