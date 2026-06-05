@@ -648,6 +648,15 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       });
     }
+
+    // ===== INITIALIZE ENVIRONMENT & CURRENT TABS (only once) =====
+    // MOVED HERE: This must be done AFTER both charts are created so that
+    // event listeners can safely call drawChart() without null reference errors
+    if (!window.tabsInitialised) {
+      window.tabsInitialised = true;
+      // Initialize all tab functionality
+      initTabs();
+    }
   
     // ===== INITIALIZE GIVENERGY TABS (only once) =====
     if (!window.givenergyTabsInitialised) {
@@ -689,13 +698,6 @@ document.addEventListener("DOMContentLoaded", () => {
       if (flow === "grid-battery")  drawGivenergyChart(givenergyData, "Grid to Battery", "Grid to Battery");
       if (flow === "battery-home")  drawGivenergyChart(givenergyData, "Battery to Home", "Battery to Home");
       if (flow === "battery-grid")  drawGivenergyChart(givenergyData, "Battery to Grid", "Battery to Grid");
-    }
-  
-    // ===== INITIALIZE ENVIRONMENT & CURRENT TABS (only once) =====
-    if (!window.tabsInitialised) {
-      window.tabsInitialised = true;
-      // Initialize all tab functionality
-      initTabs();
     }
   
     // ===== DRAW DEFAULT CHART ON LOAD/REFRESH =====
