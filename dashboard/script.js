@@ -269,6 +269,46 @@ document.addEventListener("DOMContentLoaded", () => {
     givenergyChart.update();
   }
 
+  // ==================== MOBILE GIVENERGY TO MAIN CHART ====================
+  // Helper function to display GiveEnergy data in the main chart on mobile
+  function drawGivenergyToMainChart(data, flowCol, title) {
+    if (!mainChart || !mainChart.options || !mainChart.options.scales || !mainChart.options.scales.y) {
+      console.warn("drawGivenergyToMainChart called before mainChart was fully initialized. Skipping draw.");
+      return;
+    }
+
+    const flowData = data.map(d => d[flowCol]);
+    const labels = data.map(d => d.start);
+    const textColor = window.matchMedia("(prefers-color-scheme: dark)").matches ? "#ddd" : "#000";
+
+    // Build single Givenergy dataset matching drawGivenergyChart configuration
+    mainChart.data.labels = labels;
+    mainChart.data.datasets = [{
+      label: title,
+      data: flowData,
+      borderColor: "#3498db",
+      backgroundColor: "#3498db",
+      pointStyle: "rect",
+      borderWidth: 1,
+      pointRadius: 1,
+      pointHoverRadius: 8,
+      tension: 0.2,
+      fill: false
+    }];
+
+    // Rescale Y-axis bounds
+    const numericVals = flowData.map(v => Number(v)).filter(v => Number.isFinite(v));
+    const roundedMax = Math.ceil(Math.max(...numericVals) / 5) * 5;
+    const roundedMin = Math.floor(Math.min(...numericVals) / 5) * 5;
+    mainChart.options.scales.y.min = roundedMin;
+    mainChart.options.scales.y.max = roundedMax === roundedMin ? roundedMin + 5 : roundedMax;
+
+    mainChart.options.plugins.title.text = title;
+    mainChart.options.plugins.title.color = textColor;
+    mainChart.options.scales.y.title.text = "Energy Flow";
+
+    mainChart.update();
+  }
   
   // ==================== TAB INITIALIZATION FUNCTION ====================
   // Initialize all tab switching functionality
@@ -388,7 +428,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
 
-    // ===== GIVENERGY SUB-TABS REDIRECTION FOR MOBILE =====
+    // ===== GIVENERGY SUB-TABS =====
     document.querySelectorAll("#givenergyTabs .tab").forEach(tab => {
       tab.addEventListener("click", () => {
         // Handle normal visual tab activation states
@@ -399,40 +439,10 @@ document.addEventListener("DOMContentLoaded", () => {
         const flowTitle = tab.textContent.trim();
 
         if (window.innerWidth <= 768) {
-          // MOBILE VIEW: Inject GiveEnergy dataset directly into mainChart instead of givenergyChart
-          const flowData = givenergyData.map(d => d[flow]);
-          const labels = givenergyData.map(d => d.start);
-          const textColor = window.matchMedia("(prefers-color-scheme: dark)").matches ? "#ddd" : "#000";
-
-          // Build single Givenergy array dataset matching your drawGivenergyChart configuration mapping rules
-          mainChart.data.labels = labels;
-          mainChart.data.datasets = [{
-            label: flowTitle,
-            data: flowData,
-            borderColor: "#3498db",
-            backgroundColor: "#3498db",
-            pointStyle: "rect",
-            borderWidth: 1,
-            pointRadius: 1,
-            pointHoverRadius: 8,
-            tension: 0.2,
-            fill: false
-          }];
-
-          // Rescale Y Axis Bounds conditionally
-          const numericVals = flowData.map(v => Number(v)).filter(v => Number.isFinite(v));
-          const roundedMax = Math.ceil(Math.max(...numericVals) / 5) * 5;
-          const roundedMin = Math.floor(Math.min(...numericVals) / 5) * 5;
-          mainChart.options.scales.y.min = roundedMin;
-          mainChart.options.scales.y.max = roundedMax === roundedMin ? roundedMin + 5 : roundedMax;
-
-          mainChart.options.plugins.title.text = flowTitle;
-          mainChart.options.plugins.title.color = textColor;
-          mainChart.options.scales.y.title.text = "Energy Flow"; // Give energy unified metric title
-
-          mainChart.update();
+          // MOBILE VIEW: Inject GiveEnergy dataset into mainChart
+          drawGivenergyToMainChart(givenergyData, flow, flowTitle);
         } else {
-          // DESKTOP VIEW: Fallback gracefully to original workflow triggers if needed
+          // DESKTOP VIEW: Use the separate GiveEnergy chart
           if (typeof drawGivenergyChart === "function") {
             drawGivenergyChart(givenergyData, flow, flowTitle);
           }
@@ -661,69 +671,32 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
-    // ===== INITIALIZE ENVIRONMENT & CURRENT TABS (only once) =====
-    // MOVED HERE: This must be done AFTER both charts are created so that
+    // ===== INITIALIZE TABS (only once) =====
+    // This must be done AFTER both charts are created so that
     // event listeners can safely call drawChart() without null reference errors
     if (!window.tabsInitialised) {
       window.tabsInitialised = true;
-      // Initialize all tab functionality
       initTabs();
     }
   
-    // ===== INITIALIZE GIVENERGY TABS (only once) =====
-    if (!window.givenergyTabsInitialised) {
-      window.givenergyTabsInitialised = true;
-      // Add click listeners to each GiveEnergy flow tab
-      document.querySelectorAll("#givenergyTabs .tab").forEach(tab => {
-        tab.addEventListener("click", () => {
-          // Remove active class from all GiveEnergy tabs
-          document.querySelectorAll("#givenergyTabs .tab").forEach(t => t.classList.remove("active"));
-          // Add active class to clicked tab
-          tab.classList.add("active");
-
-          // Get the energy flow type from the tab's data attribute
-          const flow = tab.dataset.flow;
-          // Draw the appropriate GiveEnergy chart based on flow type
-          if (flow === "pv-home")       drawGivenergyChart(givenergyData, "PV to Home",       "PV to Home");
-          if (flow === "pv-battery")    drawGivenergyChart(givenergyData, "PV to Battery",    "PV to Battery");
-          if (flow === "pv-grid")       drawGivenergyChart(givenergyData, "PV to Grid",       "PV to Grid");
-          if (flow === "grid-home")     drawGivenergyChart(givenergyData, "Grid to Home",     "Grid to Home");
-          if (flow === "grid-battery")  drawGivenergyChart(givenergyData, "Grid to Battery",  "Grid to Battery");
-          if (flow === "battery-home")  drawGivenergyChart(givenergyData, "Battery to Home",  "Battery to Home");
-          if (flow === "battery-grid")  drawGivenergyChart(givenergyData, "Battery to Grid",  "Battery to Grid");
-        });
-      });
-    }
-  
-    // ===== DRAW DEFAULT GIVENERGY TAB =====
-    // Draw the default GiveEnergy chart for the active tab on page load/refresh
-    const activeGe = document.querySelector("#givenergyTabs .tab.active");
-    console.log("activeGe:", activeGe);
-    if (activeGe) {
-      const flow = activeGe.dataset.flow;
-      console.log("drawing givenergy flow:", flow);
-      // Draw chart for the active flow type
-      if (flow === "pv-home")       drawGivenergyChart(givenergyData, "PV to Home",      "PV to Home");
-      if (flow === "pv-battery")    drawGivenergyChart(givenergyData, "PV to Battery",   "PV to Battery");
-      if (flow === "pv-grid")       drawGivenergyChart(givenergyData, "PV to Grid",      "PV to Grid");
-      if (flow === "grid-home")     drawGivenergyChart(givenergyData, "Grid to Home",    "Grid to Home");
-      if (flow === "grid-battery")  drawGivenergyChart(givenergyData, "Grid to Battery", "Grid to Battery");
-      if (flow === "battery-home")  drawGivenergyChart(givenergyData, "Battery to Home", "Battery to Home");
-      if (flow === "battery-grid")  drawGivenergyChart(givenergyData, "Battery to Grid", "Battery to Grid");
-    }
-  
     // ===== DRAW DEFAULT CHART ON LOAD/REFRESH =====
-    // Redraw the currently active tab to display updated data
-    const activeMaster = document.querySelector("#masterTabs .tab.active");
-    if (activeMaster && activeMaster.dataset.master === "current") {
-      // If current tab is active, trigger the active current sub-tab
-      const activeSub = document.querySelector("#currentTabs .tab.active");
-      if (activeSub) activeSub.click();
-    } else {
-      // Otherwise, trigger the active environment sub-tab
-      const activeSub = document.querySelector("#envTabs .tab.active");
-      if (activeSub) activeSub.click();
-    }
+    // Delay this slightly to ensure all initialization is complete
+    setTimeout(() => {
+      const activeMaster = document.querySelector("#masterTabs .tab.active");
+      if (activeMaster && activeMaster.dataset.master === "current") {
+        // If current tab is active, trigger the active current sub-tab
+        const activeSub = document.querySelector("#currentTabs .tab.active");
+        if (activeSub) activeSub.click();
+      } else if (activeMaster && activeMaster.dataset.master === "givenergy") {
+        // If givenergy tab is active on mobile, trigger it
+        const activeGe = document.querySelector("#givenergyTabs .tab.active");
+        if (activeGe) activeGe.click();
+      } else {
+        // Otherwise, trigger the active environment sub-tab
+        const activeSub = document.querySelector("#envTabs .tab.active");
+        if (activeSub) activeSub.click();
+      }
+    }, 0);
 
     // ===== HIDE LOADING INDICATORS =====
     // Hide spinners to indicate data loading is complete
@@ -752,13 +725,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const activeGe = document.querySelector("#givenergyTabs .tab.active");
     if (activeGe) {
       const flow = activeGe.dataset.flow;
-      if (flow === "pv-home")       drawGivenergyChart(givenergyData, "PV to Home",      "PV to Home");
-      if (flow === "pv-battery")    drawGivenergyChart(givenergyData, "PV to Battery",   "PV to Battery");
-      if (flow === "pv-grid")       drawGivenergyChart(givenergyData, "PV to Grid",      "PV to Grid");
-      if (flow === "grid-home")     drawGivenergyChart(givenergyData, "Grid to Home",    "Grid to Home");
-      if (flow === "grid-battery")  drawGivenergyChart(givenergyData, "Grid to Battery", "Grid to Battery");
-      if (flow === "battery-home")  drawGivenergyChart(givenergyData, "Battery to Home", "Battery to Home");
-      if (flow === "battery-grid")  drawGivenergyChart(givenergyData, "Battery to Grid", "Battery to Grid");
+      const flowTitle = activeGe.textContent.trim();
+      if (window.innerWidth <= 768) {
+        drawGivenergyToMainChart(givenergyData, flow, flowTitle);
+      } else {
+        if (flow === "pv-home")       drawGivenergyChart(givenergyData, "PV to Home",      "PV to Home");
+        if (flow === "pv-battery")    drawGivenergyChart(givenergyData, "PV to Battery",   "PV to Battery");
+        if (flow === "pv-grid")       drawGivenergyChart(givenergyData, "PV to Grid",      "PV to Grid");
+        if (flow === "grid-home")     drawGivenergyChart(givenergyData, "Grid to Home",    "Grid to Home");
+        if (flow === "grid-battery")  drawGivenergyChart(givenergyData, "Grid to Battery", "Grid to Battery");
+        if (flow === "battery-home")  drawGivenergyChart(givenergyData, "Battery to Home", "Battery to Home");
+        if (flow === "battery-grid")  drawGivenergyChart(givenergyData, "Battery to Grid", "Battery to Grid");
+      }
     }
     
     // Redraw the currently active main sensor chart with new colors
