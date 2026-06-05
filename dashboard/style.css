@@ -429,3 +429,38 @@ canvas.loading {
     background: #333;  /* Slightly lighter on hover */
   }
 }
+
+/* =============================================================================
+   MOBILE RESPONSIVE STYLES (Max-width: 768px)
+   ============================================================================= */
+@media (max-width: 768px) {
+  /* Hide the separate Givenergy section completely */
+  .givenergy-section, #givenergyTabs, #chart-seperator {
+    display: none !important;
+  }
+
+  /* Make sure our layout containers handle small device limits */
+  body {
+    margin: 15px; /* Reduce heavy margins on mobile viewports */
+  }
+
+  .chart-container {
+    min-width: 100% !important;
+  }
+
+  /* Reorient legend control buttons on mobile if needed */
+  .legend-controls {
+    justify-content: center;
+    margin-bottom: 15px;
+  }
+}
+
+/* =============================================================================
+   DESKTOP STYLES (Min-width: 769px)
+   ============================================================================= */
+@media (min-width: 769px) {
+  /* Hide the mobile unified Givenergy master tab on desktop views */
+  .mobile-only-tab {
+    display: none !important;
+  }
+}
