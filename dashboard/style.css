@@ -2,430 +2,506 @@
    GLOBAL BODY STYLES
    ============================================================================= */
 body {
-  font-family: Arial, sans-serif;  /* Set the default font to Arial with sans-serif fallback */
-  margin: 40px;  /* Add 40px margin on all sides of the page */
-  background: #f7f7f7;  /* Light gray background for light mode */
-  color: #333;  /* Dark gray text color for light mode */
+  font-family: Arial, sans-serif;
+  margin: 40px;
+  background: #f7f7f7;
+  color: #333;
 }
 
 /* =============================================================================
-   LOGO BAR - TOP HEADER SECTION WITH LOGOS
+   LOGO BAR
    ============================================================================= */
 .logo-bar {
-  display: flex;  /* Use flexbox for horizontal layout */
-  justify-content: space-between;  /* Distribute content with space between left and right sides */
-  align-items: center;  /* Vertically center all items */
-  margin-bottom: 20px;  /* Add space below the logo bar */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
 }
 
-/* Left side of logo bar containing multiple logos */
 .logo-bar-left {
-  display: flex;  /* Use flexbox for horizontal layout */
-  align-items: center;  /* Vertically center logos */
-  gap: 20px;  /* Add 20px space between each logo */
+  display: flex;
+  align-items: center;
+  gap: 20px;
 }
 
-/* UOS (University of South?) logo sizing - appears in both light and dark variants */
-#uos-logo-light, #uos-logo-dark {
-  width: 152px;  /* Set logo width to 152px */
-}
+#uos-logo-light, #uos-logo-dark { width: 152px; }
+#sml-logo-light, #sml-logo-dark { width: 200px; }
+#ehl-logo-light, #ehl-logo-dark { width: 115px; }
 
-/* SML logo sizing - appears in both light and dark variants */
-#sml-logo-light, #sml-logo-dark {
-  width: 200px;  /* Set logo width to 200px */
-}
-
-/* EHL logo sizing - appears in both light and dark variants */
-#ehl-logo-light, #ehl-logo-dark {
-  width: 115px;  /* Set logo width to 115px */
-}
-
-/* Hide all dark mode logos by default (they're shown in dark mode media query) */
-#uos-logo-dark, #sml-logo-dark, #ehl-logo-dark {
-  display: none;  /* Hide dark logos initially */
-}
+#uos-logo-dark, #sml-logo-dark, #ehl-logo-dark { display: none; }
 
 /* =============================================================================
-   HEADING STYLES
+   HEADINGS
    ============================================================================= */
-/* Main page heading/title */
 h1 {
-  text-align: center;  /* Center the heading text */
-  margin-bottom: 50px;  /* Add 50px space below heading */
-  margin-top: 0;  /* Remove default top margin */
-  font-size: 40px;  /* Large heading size */
+  text-align: center;
+  margin-bottom: 50px;
+  margin-top: 0;
+  font-size: 40px;
 }
 
-/* Section headers used for major content divisions */
 .section-header {
-  text-align: center;  /* Center the section header text */
-  font-size: 30px;  /* Large font size for sections */
-  padding-top: 40px;  /* Add space above the header */
-  border-top: 3px solid #ccc;  /* Add a gray line above section */
-  margin-bottom: 0px;  /* No space below header */
+  text-align: center;
+  font-size: 30px;
+  padding-top: 40px;
+  border-top: 3px solid #ccc;
+  margin-bottom: 0px;
 }
 
 /* =============================================================================
-   CANVAS STYLES - FOR CHARTS/GRAPHS
+   CANVAS & WRAPPER
    ============================================================================= */
-/* Container that wraps the canvas element */
 .canvas-wrapper {
-  height: 500px;  /* Set fixed height for canvas area */
-  position: relative;  /* Allow absolute positioning of child elements */
+  height: 500px;
+  position: relative;
 }
 
-/* Canvas element styling (used for drawing charts) */
 canvas {
-  display: block;  /* Make canvas a block element */
-  margin: 0 auto;  /* Center the canvas horizontally */
-  width: 100% !important;  /* Force canvas to fill container width */
-  height: 500px;  /* Fixed height matching wrapper */
-  background: none;  /* Transparent background */
-  padding: 0;  /* No padding around canvas */
-  border-radius: 0;  /* No rounded corners */
-  box-shadow: none;  /* No shadow effect */
-  z-index: 1;  /* Stack order - above default */
+  display: block;
+  margin: 0 auto;
+  width: 100% !important;
+  height: 500px;
+  background: none;
+  padding: 0;
+  border-radius: 0;
+  box-shadow: none;
+  z-index: 1;
 }
 
-/* Hide canvas while it's loading data */
-canvas.loading {
-  opacity: 0;  /* Make canvas invisible during loading */
-}
+canvas.loading { opacity: 0; }
 
 /* =============================================================================
-   CHART CONTAINER STYLES
+   CHART CONTAINER
    ============================================================================= */
-/* Individual chart card styling */
 .chart-container {
-  flex: 1;  /* Allow container to grow and shrink */
-  min-width: 500px;  /* Ensure minimum width for readability */
-  background: white;  /* White background for chart cards */
-  padding: 20px;  /* Internal spacing around chart content */
-  border-radius: 10px;  /* Rounded corners for modern look */
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);  /* Subtle shadow for depth */
-  position: relative;  /* Allow absolute positioning of child elements */
+  flex: 1;
+  min-width: 500px;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  position: relative;
 }
 
-/* Canvas inside chart container */
-.chart-container canvas {
-  flex: 1;  /* Allow canvas to flex within container */
-}
+.chart-container canvas { flex: 1; }
 
-/* Row layout for displaying multiple charts side-by-side */
 .chart-row {
-  display: flex;  /* Use flexbox for horizontal layout */
-  justify-content: space-between;  /* Distribute charts evenly */
-  gap: 20px;  /* Add space between charts */
-  flex-wrap: wrap;  /* Allow charts to wrap to new line on small screens */
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
 }
 
 /* =============================================================================
-   TAB AND NAVIGATION STYLES
+   CHART SCROLL OUTER (arrows + scrollable wrapper)
+   Desktop: arrows hidden, wrapper is plain block
    ============================================================================= */
-/* Row containing sub-tabs */
+.chart-scroll-outer {
+  display: flex;
+  align-items: stretch;
+  gap: 4px;
+}
+
+.chart-scroll-wrapper {
+  flex: 1;
+}
+
+.canvas-area {
+  width: 100%;
+}
+
+/* Arrows: hidden on desktop, shown on mobile */
+.chart-arrow {
+  display: none;
+}
+
+/* =============================================================================
+   TABS
+   ============================================================================= */
 .sub-tab-row {
-  margin-bottom: 15px;  /* Add space below sub-tabs */
-  padding-left: 0px;  /* No left padding */
+  margin-bottom: 15px;
+  padding-left: 0;
 }
 
-/* Master/main tab container */
 #masterTabs {
-  border-bottom: 3px solid #ccc;  /* Add line below tabs */
-  padding-bottom: 10px;  /* Space inside below border */
-  margin-bottom: 10px;  /* Space outside below tabs */
-  margin-top: 10px;  /* Space above tabs */
-  display: inline-flex;  /* Horizontal layout for tabs */
+  border-bottom: 3px solid #ccc;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  display: inline-flex;
 }
 
-/* Separator line between chart sections */
-#chart-seperator {
-  border-bottom: 3px solid #ccc;  /* Gray line separator */
-  padding-bottom: 10px;  /* Space inside below border */
-  margin-bottom: 10px;  /* Space below separator */
-}
+.chart-title { text-align: center; margin-bottom: 20px; }
 
-/* Title/heading for individual charts */
-.chart-title {
-  text-align: center;  /* Center the chart title */
-  margin-bottom: 20px;  /* Space below title */
-}
-
-/* Row containing tabs */
 .tab-row {
-  display: flex;  /* Horizontal layout */
-  gap: 10px;  /* Space between tabs */
-  margin-bottom: 15px;  /* Space below tab row */
-  overflow: visible;  /* Allow content to overflow (for tooltips) */
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+  overflow: visible;
 }
 
-/* Individual tab styling */
 .tab {
-  padding: 10px 12px;  /* Internal spacing in tab */
-  background: #eee;  /* Light gray background */
-  border-radius: 6px;  /* Slightly rounded corners */
-  cursor: pointer;  /* Show this is clickable */
-  user-select: none;  /* Prevent text selection on click */
-  font-weight: bold;  /* Bold text */
-  transition: 0.2s;  /* Smooth animation for state changes */
-  color: #333;  /* Dark text color */
-  position: relative;  /* Allow tooltips to position absolutely */
-  font-size: 17.5px;  /* Tab text size */
+  padding: 10px 12px;
+  background: #eee;
+  border-radius: 6px;
+  cursor: pointer;
+  user-select: none;
+  font-weight: bold;
+  transition: 0.2s;
+  color: #333;
+  position: relative;
+  font-size: 17.5px;
 }
 
-/* Larger variant of tab for master tabs */
-.master-tab {
-  padding: 12px 14px;  /* Slightly more padding */
-  font-size: 25px;  /* Larger font size */
-}
+.master-tab { padding: 12px 14px; font-size: 25px; }
 
-/* Tab hover effect - lighter background */
-.tab:hover {
-  background: #ddd;  /* Slightly darker gray on hover */
-}
+.tab:hover { background: #ddd; }
 
-/* Tooltip that appears on tab hover */
 .tab::after {
-  content: attr(data-tooltip);  /* Display the tooltip text from data attribute */
-  position: absolute;  /* Position relative to tab */
-  top: calc(100% + 8px);  /* Below the tab with 8px spacing */
-  left: 50%;  /* Horizontally center */
-  transform: translateX(-50%);  /* Adjust for centering */
-  background: #333;  /* Dark background for contrast */
-  color: #fff;  /* White text */
-  padding: 8px 12px;  /* Internal spacing */
-  border-radius: 6px;  /* Rounded corners */
-  font-size: 15px;  /* Smaller font than tab */
-  font-weight: normal;  /* Regular weight (not bold) */
-  white-space: normal;  /* Allow text wrapping */
-  width: 220px;  /* Fixed tooltip width */
-  text-align: center;  /* Center tooltip text */
-  pointer-events: none;  /* Tooltip doesn't interfere with mouse events */
-  opacity: 0;  /* Hidden by default */
-  transition: opacity 0.2s;  /* Smooth fade in/out */
-  z-index: 100;  /* Appear above other elements */
+  content: attr(data-tooltip);
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: normal;
+  white-space: normal;
+  width: 220px;
+  text-align: center;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+  z-index: 100;
 }
 
-/* Show tooltip on tab hover */
-.tab:hover::after {
-  opacity: 1;  /* Make tooltip visible */
-}
-
-/* Special case: first tab's tooltip aligns to the left instead of center */
-.tab-row .tab:first-child::after {
-  left: 0;  /* Align to left edge */
-  transform: none;  /* No centering transform */
-}
-
-/* Active/selected tab styling */
-.tab.active {
-  background: #3498db;  /* Blue background for active state */
-  color: white;  /* White text for contrast */
-}
+.tab:hover::after { opacity: 1; }
+.tab-row .tab:first-child::after { left: 0; transform: none; }
+.tab.active { background: #3498db; color: white; }
 
 /* =============================================================================
-   LEGEND AND CONTROL STYLES
+   LEGEND CONTROLS (Hide All / Show All / Invert)
    ============================================================================= */
-/* Container for legend control buttons */
 .legend-controls {
-  display: flex;  /* Horizontal layout for buttons */
-  gap: 10px;  /* Space between buttons */
-  margin-bottom: 10px;  /* Space below controls */
-  justify-content: flex-end;  /* Align buttons to the right */
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+  justify-content: flex-end;
 }
 
-/* Legend control buttons */
 .legend-controls button {
-  padding: 6px 8px;  /* Internal spacing */
-  border: none;  /* No border */
-  border-radius: 6px;  /* Rounded corners */
-  background: #eee;  /* Light gray background */
-  color: #333;  /* Dark text */
-  font-weight: bold;  /* Bold text */
-  cursor: pointer;  /* Show clickable */
-  transition: 0.2s;  /* Smooth state transition */
-  font-size: 15px;  /* Button text size */
+  padding: 6px 8px;
+  border: none;
+  border-radius: 6px;
+  background: #eee;
+  color: #333;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+  font-size: 15px;
 }
 
-/* Legend button hover effect */
-.legend-controls button:hover {
-  background: #ddd;  /* Slightly darker on hover */
-}
+.legend-controls button:hover { background: #ddd; }
 
 /* =============================================================================
-   GIVENERGY SECTION STYLES
+   CUSTOM LEGEND (mobile only — hidden on desktop)
    ============================================================================= */
-/* Container for GiveEnergy related content */
-.givenergy-section {
-  margin-top: 20px;  /* Space above section */
-  border-top: 3px solid #ccc;  /* Gray line above section */
+#customLegend {
+  display: none;
 }
 
-/* Heading within givenergy section */
-.givenergy-section h2 {
-  text-align: center;  /* Center the heading */
-  margin-bottom: 40px;  /* Large space below heading */
-  font-size: 30px;  /* Large heading size */
-  margin-top: 20px;  /* Space above heading */
+.legend-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 0;
 }
+
+/* Collapsed: only show first 6 items */
+.legend-grid.legend-collapsed .legend-item:nth-child(n+7) {
+  display: none;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.legend-item.legend-hidden .legend-label {
+  opacity: 0.4;
+  text-decoration: line-through;
+}
+
+.legend-swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+/* Checkbox hidden — swatch + label act as the toggle */
+.legend-checkbox { display: none; }
+
+.legend-toggle {
+  width: 100%;
+  padding: 8px;
+  background: #eee;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 14px;
+  margin-top: 6px;
+  transition: 0.2s;
+}
+
+.legend-toggle:hover { background: #ddd; }
 
 /* =============================================================================
-   TOOLTIP STYLES
+   TOOLTIP (header)
    ============================================================================= */
-/* Container for header tooltips */
 .header-tooltip {
-  position: relative;  /* Allow absolutely positioned children */
-  cursor: default;  /* Default cursor (not pointer) */
-  display: inline-block;  /* Inline but with block properties */
+  position: relative;
+  cursor: default;
+  display: inline-block;
 }
 
-/* Tooltip text that appears on hover */
 .header-tooltip::after {
-  content: attr(data-tooltip);  /* Display tooltip from data attribute */
-  position: absolute;  /* Position relative to header */
-  top: calc(100% + 8px);  /* Below element with spacing */
-  left: 50%;  /* Horizontally center */
-  transform: translateX(-50%);  /* Adjust for centering */
-  background: #333;  /* Dark background */
-  color: #fff;  /* White text */
-  padding: 8px 12px;  /* Internal spacing */
-  border-radius: 6px;  /* Rounded corners */
-  font-size: 15px;  /* Tooltip font size */
-  font-weight: normal;  /* Regular weight */
-  white-space: normal;  /* Allow text wrapping */
-  width: 300px;  /* Wider than tab tooltips */
-  text-align: center;  /* Center text */
-  pointer-events: none;  /* Don't interfere with mouse events */
-  opacity: 0;  /* Hidden by default */
-  transition: opacity 0.2s;  /* Smooth fade animation */
-  z-index: 100;  /* Appear above other content */
+  content: attr(data-tooltip);
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: normal;
+  white-space: normal;
+  width: 300px;
+  text-align: center;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+  z-index: 100;
 }
 
-/* Show tooltip on hover */
-.header-tooltip:hover::after {
-  opacity: 1;  /* Make tooltip visible */
-}
+.header-tooltip:hover::after { opacity: 1; }
 
 /* =============================================================================
-   LOADING SPINNER ANIMATION
+   LOADING SPINNER
    ============================================================================= */
-/* Loading spinner element */
 .chart-spinner {
-  border: 6px solid #eee;  /* Outer gray border */
-  border-top: 6px solid #3498db;  /* Colored border on top for animation */
-  border-radius: 50%;  /* Make it circular */
-  width: 40px;  /* Spinner size */
-  height: 40px;  /* Square dimensions for circle */
-  animation: spin 1s linear infinite;  /* Rotate continuously */
-  position: absolute;  /* Position over chart */
-  top: 50%;  /* Vertically centered */
-  left: 50%;  /* Horizontally centered */
-  transform: translate(-50%, -50%);  /* Adjust for center point */
-  display: none;  /* Hidden by default */
-  z-index: 10;  /* Appear above canvas but below tooltips */
+  border: 6px solid #eee;
+  border-top: 6px solid #3498db;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: none;
+  z-index: 10;
 }
 
-/* Spin animation keyframes */
 @keyframes spin {
-  0% { transform: rotate(0deg); }  /* Start rotation at 0 degrees */
-  100% { transform: rotate(360deg); }  /* Complete full rotation */
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 /* =============================================================================
-   RESPONSIVE DESIGN - MOBILE SCREENS (max 768px width)
+   FOOTER
+   ============================================================================= */
+.dashboard-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  margin-top: 20px;
+  border-top: 1px solid #ccc;
+  font-size: 13px;
+  color: #666;
+}
+
+/* =============================================================================
+   MOBILE — max-width: 768px
    ============================================================================= */
 @media (max-width: 768px) {
-  /* Stack logo bar vertically on mobile */
-  .logo-bar {
-    flex-direction: column;  /* Stack items vertically */
-    gap: 15px;  /* Space between stacked items */
-  }
-  
-  /* Increase tab height for easier tapping on mobile */
-  .tab {
-    padding-top: 25px !important;  /* Larger top padding */
-    padding-bottom: 25px !important;  /* Larger bottom padding */
-  }
-  
-  /* Reduce logo sizes for mobile screens */
+
+  /* Reduce body margins */
+  body { margin: 10px; }
+
+  /* Heading sizes */
+  h1 { font-size: 22px; margin-bottom: 16px; }
+  .section-header { font-size: 18px; padding-top: 16px; }
+
+  /* Logo bar: stack vertically */
+  .logo-bar { flex-direction: column; gap: 12px; }
   #uos-logo-light, #uos-logo-dark { width: 100px; }
   #sml-logo-light, #sml-logo-dark { width: 120px; }
   #ehl-logo-light, #ehl-logo-dark { width: 80px; }
+
+  /* Master tabs: horizontally scrollable row */
+  #masterTabs {
+    display: flex;
+    width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  #masterTabs::-webkit-scrollbar { display: none; }
+
+  /* All tab rows: scroll horizontally, no wrapping */
+  .tab-row {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .tab-row::-webkit-scrollbar { display: none; }
+
+  /* Individual tabs: no shrink, no wrapping */
+  .tab {
+    flex-shrink: 0;
+    white-space: nowrap;
+    font-size: 14px;
+    padding: 10px 14px;
+  }
+
+  .master-tab { font-size: 17px; padding: 11px 16px; }
+
+  /* Suppress tooltips on mobile (no hover) */
+  .tab::after,
+  .header-tooltip::after { display: none !important; }
+
+  /* Chart container: remove min-width that causes overflow */
+  .chart-container {
+    min-width: 0 !important;
+    padding: 10px;
+  }
+
+  /* Scroll outer: show arrows flanking the scroll wrapper */
+  .chart-scroll-outer {
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* Arrow buttons: visible on mobile */
+  .chart-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 28px;
+    height: 100%;
+    min-height: 360px;
+    background: #eee;
+    border: none;
+    border-radius: 6px;
+    font-size: 30px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #555;
+    padding: 0;
+    line-height: 1;
+  }
+
+  /* Scroll wrapper: clips the wide canvas and enables scroll */
+  .chart-scroll-wrapper {
+    flex: 1;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .chart-scroll-wrapper::-webkit-scrollbar { display: none; }
+
+  /* Canvas area: fixed wide so chart is legible */
+  .canvas-area { width: 900px; }
+
+  /* Canvas wrapper and canvas: shorter on mobile */
+  .canvas-wrapper { height: 350px; }
+  canvas { height: 350px; }
+
+  /* Custom legend: show on mobile */
+  #customLegend { display: block; margin-top: 10px; }
+
+  /* Legend grid: 2-column layout */
+  .legend-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px 10px;
+  }
+
+  /* Legend controls: full-width stacked buttons */
+  .legend-controls {
+    flex-direction: column;
+    justify-content: stretch;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .legend-controls button {
+    width: 100%;
+    padding: 13px;
+    font-size: 16px;
+    border-radius: 8px;
+  }
+
+  /* Footer: stack on mobile */
+  .dashboard-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    font-size: 11px;
+    padding: 10px 12px;
+  }
 }
 
 /* =============================================================================
-   DARK MODE STYLES
+   DARK MODE
    ============================================================================= */
-/* Dark mode is activated when user's system preference is dark */
 @media (prefers-color-scheme: dark) {
-  /* Dark mode body background and text */
-  body {
-    background: #121212;  /* Very dark gray/black background */
-    color: #e0e0e0;  /* Light gray text for contrast */
-  }
-  
-  /* Show dark logos and hide light logos in dark mode */
-  #uos-logo-light { display: none; }  /* Hide light logo */
-  #uos-logo-dark  { display: block; }  /* Show dark logo */
-  
-  #sml-logo-light { display: none; }  /* Hide light logo */
-  #sml-logo-dark  { display: block; }  /* Show dark logo */
+  body { background: #121212; color: #e0e0e0; }
 
-  #ehl-logo-light { display: none; }  /* Hide light logo */
-  #ehl-logo-dark  { display: block; }  /* Show dark logo */
+  #uos-logo-light { display: none; } #uos-logo-dark  { display: block; }
+  #sml-logo-light { display: none; } #sml-logo-dark  { display: block; }
+  #ehl-logo-light { display: none; } #ehl-logo-dark  { display: block; }
 
-  /* Dark mode chart container styling */
   .chart-container {
-    background: #1e1e1e !important;  /* Dark gray background */
-    border-color: #333;  /* Dark border color */
-    box-shadow: 0 2px 8px rgba(0,0,0,0.5);  /* Stronger shadow for depth in dark mode */
+    background: #1e1e1e !important;
+    border-color: #333;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.5);
   }
 
-  /* Dark mode master tabs border */
-  #masterTabs {
-  border-bottom-color: #444;  /* Dark gray border */
-  }
-  
-  /* Dark mode tab styling */
-  .tab {
-    background: #222 !important;  /* Dark background */
-    color: #ddd !important;  /* Light gray text */
-  }
+  #masterTabs { border-bottom-color: #444; }
 
-  /* Dark mode tab hover effect */
-  .tab:hover {
-    background: #333 !important;  /* Slightly lighter on hover */
-  }
+  .tab { background: #222 !important; color: #ddd !important; }
+  .tab:hover { background: #333 !important; }
+  .tab.active { background: #444 !important; color: #fff !important; }
 
-  /* Dark mode active tab styling */
-  .tab.active {
-    background: #444 !important;  /* Medium dark gray background */
-    color: #fff !important;  /* White text */
-  }
+  .chart-spinner { border-color: #444; border-top-color: #3498db; }
 
-  /* Dark mode loading spinner */
-  .chart-spinner {
-    border-color: #444;  /* Dark border */
-    border-top-color: #3498db;  /* Keep blue accent */
-  }
+  .legend-controls button { background: #222; color: #ddd; }
+  .legend-controls button:hover { background: #333; }
 
-  /* Dark mode legend buttons */
-  .legend-controls button {
-    background: #222;  /* Dark background */
-    color: #ddd;  /* Light gray text */
-  }
-  
-  /* Dark mode givenergy section border */
-  .givenergy-section {
-  border-top-color: #444;  /* Dark border */
-  }
-  
-  /* Dark mode section headers */
-  .section-header {
-  border-top-color: #444;  /* Dark border */
-  }
-  
-  /* Dark mode legend button hover */
-  .legend-controls button:hover {
-    background: #333;  /* Slightly lighter on hover */
-  }
+  .chart-arrow { background: #333; color: #bbb; }
+  .chart-arrow:hover { background: #444; }
+
+  .legend-toggle { background: #333; color: #ddd; }
+  .legend-toggle:hover { background: #444; }
+
+  .legend-item { color: #ddd; }
+
+  .dashboard-footer { color: #888; border-top-color: #444; }
+
+  .section-header { border-top-color: #444; }
 }
